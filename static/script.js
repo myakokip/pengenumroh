@@ -166,7 +166,7 @@ class EVMMultiSender {
             },
             'sepolia': {
                 name: 'Sepolia Testnet',
-                rpc_url: 'https://rpc.sepolia.org',
+                rpc_url: 'https://ethereum-sepolia-rpc.publicnode.com',
                 chain_id: 11155111,
                 symbol: 'ETH',
                 explorer: 'https://sepolia.etherscan.io'
