@@ -128,8 +128,7 @@ class EVMMultiSender {
 
         const walletsHtml = this.wallets.map((wallet, index) => `
             <div class="wallet-item">
-                <small class="text-muted">#${index + 1}</small><br>
-                ${wallet.address}
+                <small class="text-muted">#${index + 1}</small> ${wallet.address}
             </div>
         `).join('');
 
