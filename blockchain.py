@@ -78,7 +78,7 @@ class BlockchainService:
                     "id": 1
                 }
                 
-                async with session.post(rpc_url, json=payload) as response:
+                async with session.post(str(rpc_url), json=payload) as response:
                     data = await response.json()
                     
                     if 'error' in data:
@@ -111,7 +111,7 @@ class BlockchainService:
     async def estimate_gas_async(self, w3: Web3, transaction: Dict[str, Any]) -> int:
         """Estimate gas for transaction"""
         try:
-            return w3.eth.estimate_gas(transaction)
+            return w3.eth.estimate_gas(transaction)  # type: ignore
         except Exception as e:
             logging.warning(f"Gas estimation failed: {e}, using default")
             return 21000  # Standard ETH transfer gas limit
@@ -182,7 +182,7 @@ class BlockchainService:
             signed_txn = w3.eth.account.sign_transaction(transaction, private_key)
             
             # Send transaction
-            tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            tx_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
             tx_hash_hex = tx_hash.hex()
             
             # Convert amount to ETH for display
