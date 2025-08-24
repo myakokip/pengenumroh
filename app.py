@@ -26,11 +26,11 @@ def import_keys():
     """Import private keys from uploaded file"""
     try:
         if 'file' not in request.files:
-            return jsonify({'error': 'No file uploaded'}), 400
+            return jsonify({'error': 'Tidak ada file yang diupload'}), 400
         
         file = request.files['file']
         if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
+            return jsonify({'error': 'Tidak ada file yang dipilih'}), 400
         
         # Read file content
         content = file.read().decode('utf-8')
@@ -51,7 +51,7 @@ def import_keys():
                     logging.warning(f"Invalid private key format: {line[:10]}...")
         
         if not private_keys:
-            return jsonify({'error': 'No valid private keys found in file'}), 400
+            return jsonify({'error': 'Tidak ditemukan private key yang valid dalam file'}), 400
         
         # Generate wallet addresses
         wallets = []
@@ -87,11 +87,11 @@ def get_balances():
         network_config = data.get('network')
         
         if not network_config:
-            return jsonify({'error': 'Network configuration required'}), 400
+            return jsonify({'error': 'Konfigurasi jaringan diperlukan'}), 400
         
         wallets = session.get('wallets', [])
         if not wallets:
-            return jsonify({'error': 'No wallets imported'}), 400
+            return jsonify({'error': 'Tidak ada wallet yang diimpor'}), 400
         
         # Get balances for all wallets
         balances = asyncio.run(blockchain_service.get_balances_async(
@@ -118,11 +118,11 @@ def send_transactions():
         recipient_address = data.get('recipient_address')
         
         if not all([network_config, percentage, recipient_address]):
-            return jsonify({'error': 'Missing required parameters'}), 400
+            return jsonify({'error': 'Parameter yang diperlukan tidak lengkap'}), 400
         
         wallets = session.get('wallets', [])
         if not wallets:
-            return jsonify({'error': 'No wallets imported'}), 400
+            return jsonify({'error': 'Tidak ada wallet yang diimpor'}), 400
         
         # Send transactions
         results = asyncio.run(blockchain_service.send_transactions_async(

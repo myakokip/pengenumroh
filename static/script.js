@@ -1,4 +1,4 @@
-// EVM Multi Sender JavaScript
+// EVM Multi Pengirim JavaScript
 
 class EVMMultiSender {
     constructor() {
@@ -39,7 +39,7 @@ class EVMMultiSender {
         });
     }
 
-    showLoading(text = 'Processing...') {
+    showLoading(text = 'Memproses...') {
         document.getElementById('loadingText').textContent = text;
         const modal = new bootstrap.Modal(document.getElementById('loadingModal'));
         modal.show();
@@ -79,19 +79,19 @@ class EVMMultiSender {
         const file = fileInput.files[0];
 
         if (!file) {
-            this.showAlert('Please select a file first.');
+            this.showAlert('Silakan pilih file terlebih dahulu.');
             return;
         }
 
         if (!file.name.endsWith('.txt')) {
-            this.showAlert('Please select a .txt file.');
+            this.showAlert('Silakan pilih file .txt.');
             return;
         }
 
         const formData = new FormData();
         formData.append('file', file);
 
-        this.showLoading('Importing private keys...');
+        this.showLoading('Mengimpor private key...');
 
         try {
             const response = await fetch('/import_keys', {
@@ -104,14 +104,14 @@ class EVMMultiSender {
             if (data.success) {
                 this.wallets = data.wallets;
                 this.displayWallets();
-                this.showAlert(`Successfully imported ${data.count} wallets!`, 'success');
+                this.showAlert(`Berhasil mengimpor ${data.count} wallet!`, 'success');
                 document.getElementById('networkSection').style.display = 'block';
             } else {
-                this.showAlert(data.error || 'Failed to import private keys.');
+                this.showAlert(data.error || 'Gagal mengimpor private key.');
             }
         } catch (error) {
             console.error('Error importing keys:', error);
-            this.showAlert('Network error occurred while importing keys.');
+            this.showAlert('Terjadi kesalahan jaringan saat mengimpor key.');
         } finally {
             this.hideLoading();
         }
@@ -154,7 +154,7 @@ class EVMMultiSender {
         const selectedValue = networkSelect.value;
 
         if (!selectedValue) {
-            throw new Error('Please select a network first.');
+            throw new Error('Silakan pilih jaringan terlebih dahulu.');
         }
 
         const predefinedNetworks = {
@@ -195,11 +195,11 @@ class EVMMultiSender {
             const explorer = document.getElementById('customExplorer').value.trim();
 
             if (!rpcUrl || !chainId || !symbol) {
-                throw new Error('Please fill in all required custom network fields.');
+                throw new Error('Silakan isi semua field jaringan khusus yang diperlukan.');
             }
 
             return {
-                name: 'Custom Network',
+                name: 'Jaringan Khusus',
                 rpc_url: rpcUrl,
                 chain_id: chainId,
                 symbol: symbol,
@@ -212,13 +212,13 @@ class EVMMultiSender {
 
     async loadBalances() {
         if (this.wallets.length === 0) {
-            this.showAlert('Please import wallets first.');
+            this.showAlert('Silakan impor wallet terlebih dahulu.');
             return;
         }
 
         try {
             const networkConfig = this.getNetworkConfig();
-            this.showLoading('Loading wallet balances...');
+            this.showLoading('Memuat saldo wallet...');
 
             const response = await fetch('/get_balances', {
                 method: 'POST',
@@ -235,14 +235,14 @@ class EVMMultiSender {
             if (data.success) {
                 this.balances = data.balances;
                 this.displayBalances(networkConfig.symbol);
-                this.showAlert('Balances loaded successfully!', 'success');
+                this.showAlert('Saldo berhasil dimuat!', 'success');
                 document.getElementById('transferSection').style.display = 'block';
             } else {
-                this.showAlert(data.error || 'Failed to load balances.');
+                this.showAlert(data.error || 'Gagal memuat saldo.');
             }
         } catch (error) {
             console.error('Error loading balances:', error);
-            this.showAlert(error.message || 'Error loading balances.');
+            this.showAlert(error.message || 'Error memuat saldo.');
         } finally {
             this.hideLoading();
         }
@@ -276,30 +276,30 @@ class EVMMultiSender {
 
     async sendTransactions() {
         if (this.wallets.length === 0) {
-            this.showAlert('Please import wallets first.');
+            this.showAlert('Silakan impor wallet terlebih dahulu.');
             return;
         }
 
         if (this.balances.length === 0) {
-            this.showAlert('Please load balances first.');
+            this.showAlert('Silakan muat saldo terlebih dahulu.');
             return;
         }
 
         const recipientAddress = document.getElementById('recipientAddress').value.trim();
         if (!recipientAddress) {
-            this.showAlert('Please enter a recipient address.');
+            this.showAlert('Silakan masukkan alamat penerima.');
             return;
         }
 
         // Validate Ethereum address format
         if (!/^0x[a-fA-F0-9]{40}$/.test(recipientAddress)) {
-            this.showAlert('Please enter a valid Ethereum address.');
+            this.showAlert('Silakan masukkan alamat Ethereum yang valid.');
             return;
         }
 
         const selectedPercentage = document.querySelector('input[name="percentage"]:checked');
         if (!selectedPercentage) {
-            this.showAlert('Please select an amount percentage.');
+            this.showAlert('Silakan pilih persentase jumlah.');
             return;
         }
 
@@ -309,16 +309,16 @@ class EVMMultiSender {
             const networkConfig = this.getNetworkConfig();
             
             const confirmed = confirm(
-                `Are you sure you want to send ${percentage === 100 ? 'MAX' : percentage + '%'} ` +
-                `of each wallet's balance to ${recipientAddress}?\n\n` +
-                `This will affect ${this.wallets.length} wallets on ${networkConfig.name}.`
+                `Apakah Anda yakin ingin mengirim ${percentage === 100 ? 'MAKSIMAL' : percentage + '%'} ` +
+                `dari saldo setiap wallet ke ${recipientAddress}?\n\n` +
+                `Ini akan mempengaruhi ${this.wallets.length} wallet di ${networkConfig.name}.`
             );
 
             if (!confirmed) {
                 return;
             }
 
-            this.showLoading('Sending transactions... This may take a while.');
+            this.showLoading('Mengirim transaksi... Ini mungkin memakan waktu.');
 
             const response = await fetch('/send_transactions', {
                 method: 'POST',
@@ -336,14 +336,14 @@ class EVMMultiSender {
 
             if (data.success) {
                 this.displayResults(data.results, networkConfig.symbol);
-                this.showAlert('Transactions completed! Check results below.', 'info');
+                this.showAlert('Transaksi selesai! Periksa hasil di bawah.', 'info');
                 document.getElementById('resultsSection').style.display = 'block';
             } else {
-                this.showAlert(data.error || 'Failed to send transactions.');
+                this.showAlert(data.error || 'Gagal mengirim transaksi.');
             }
         } catch (error) {
             console.error('Error sending transactions:', error);
-            this.showAlert(error.message || 'Error sending transactions.');
+            this.showAlert(error.message || 'Error mengirim transaksi.');
         } finally {
             this.hideLoading();
         }
@@ -357,11 +357,11 @@ class EVMMultiSender {
 
         const summaryHtml = `
             <div class="alert alert-info mb-3">
-                <h6 class="mb-2">Transaction Summary</h6>
+                <h6 class="mb-2">Ringkasan Transaksi</h6>
                 <p class="mb-0">
-                    <strong>Total:</strong> ${results.length} transactions |
-                    <strong class="text-success">Success:</strong> ${successCount} |
-                    <strong class="text-danger">Failed:</strong> ${failedCount}
+                    <strong>Total:</strong> ${results.length} transaksi |
+                    <strong class="text-success">Berhasil:</strong> ${successCount} |
+                    <strong class="text-danger">Gagal:</strong> ${failedCount}
                 </p>
             </div>
         `;
@@ -387,7 +387,7 @@ class EVMMultiSender {
                                 <i class="fas fa-external-link-alt me-1"></i>
                                 ${result.tx_hash.substring(0, 16)}...
                             </a>` : 
-                            '<span class="text-muted">No TX Hash</span>'
+                            '<span class="text-muted">Tidak ada TX Hash</span>'
                         }
                     </div>
                 </div>
@@ -399,7 +399,7 @@ class EVMMultiSender {
     }
 
     async clearSession() {
-        const confirmed = confirm('Are you sure you want to clear all data and start over?');
+        const confirmed = confirm('Apakah Anda yakin ingin menghapus semua data dan mulai ulang?');
         if (!confirmed) {
             return;
         }
@@ -428,11 +428,11 @@ class EVMMultiSender {
                 document.getElementById('resultsSection').style.display = 'none';
                 document.getElementById('customNetworkFields').style.display = 'none';
 
-                this.showAlert('Session cleared successfully!', 'success');
+                this.showAlert('Sesi berhasil dibersihkan!', 'success');
             }
         } catch (error) {
             console.error('Error clearing session:', error);
-            this.showAlert('Error clearing session.');
+            this.showAlert('Error membersihkan sesi.');
         }
     }
 }
