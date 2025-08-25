@@ -1,7 +1,10 @@
 {
   "version": 2,
   "builds": [
-    {
+    { 
+              {
+          "deploymentEnabled": false
+    }
       "src": "api/index.py",
       "use": "@vercel/python"
     }
