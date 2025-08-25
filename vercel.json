@@ -2,9 +2,6 @@
   "version": 2,
   "builds": [
     { 
-              {
-          "deploymentEnabled": false
-    }
       "src": "api/index.py",
       "use": "@vercel/python"
     }
@@ -12,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/indexx.py"
+      "dest": "api/index.py"
     }
   ]
 }
